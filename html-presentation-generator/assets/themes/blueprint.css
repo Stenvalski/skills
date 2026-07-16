@@ -1,0 +1,240 @@
+/*
+ * Theme: Blueprint — dark, technical, precise.
+ * Use for: system design reviews, architecture walkthroughs,
+ * integration proposals for a developer/IT audience.
+ *
+ * Dark slate with a faint engineering grid, cyan accent,
+ * monospace labels. Includes glow-on-hover cards.
+ */
+
+:root {
+  --deck-bg: #0d1420;
+  --deck-fg: #dbe4f0;
+  --deck-muted: #7d8ca1;
+  --deck-accent: #4cc9f0;
+  --deck-line: #22304a;
+  --deck-font-display: var(--deck-font);
+}
+
+/* engineering grid background */
+body {
+  background-image:
+    linear-gradient(var(--deck-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--deck-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+}
+
+.deck > section {
+  background: radial-gradient(ellipse at 50% 40%,
+    rgba(13, 20, 32, 0.35), rgba(13, 20, 32, 0.92) 75%);
+}
+
+.deck h1, .deck h2 { font-weight: 650; color: #f0f5fc; }
+
+.deck .kicker {
+  font-family: var(--deck-font-mono);
+  color: var(--deck-accent);
+  letter-spacing: 0.22em;
+}
+
+.deck .lead {
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  color: #aebdd2;
+  max-width: 46rem;
+}
+
+.deck code {
+  background: #16233a;
+  border: 1px solid var(--deck-line);
+  border-radius: 4px;
+  padding: 0.08em 0.35em;
+  font-size: 0.88em;
+  color: #9fd8ff;
+}
+
+.deck pre {
+  background: #0a101a;
+  border: 1px solid var(--deck-line);
+  border-radius: 10px;
+  padding: 1.1em 1.4em;
+  overflow-x: auto;
+  font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+  line-height: 1.6;
+}
+
+.deck pre code { background: none; border: none; padding: 0; color: #cfe3ff; }
+
+/* ---------- architecture diagram primitives ---------- */
+
+.bp-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 1.6em 0;
+}
+
+.bp-node {
+  border: 1px solid var(--deck-accent);
+  border-radius: 10px;
+  background: rgba(76, 201, 240, 0.07);
+  padding: 0.9em 1.3em;
+  text-align: center;
+  min-width: 9em;
+}
+
+.bp-node.dim {
+  border-color: var(--deck-line);
+  background: rgba(34, 48, 74, 0.35);
+  color: var(--deck-muted);
+}
+
+.bp-node .bp-tag {
+  display: block;
+  font-family: var(--deck-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deck-muted);
+  margin-bottom: 0.35em;
+}
+
+.bp-arrow {
+  font-family: var(--deck-font-mono);
+  color: var(--deck-accent);
+  padding: 0 0.9em;
+  font-size: 1.3em;
+  user-select: none;
+}
+
+.bp-stack { display: flex; flex-direction: column; gap: 0.7em; }
+
+/* numbered flow list */
+.bp-flow {
+  list-style: none;
+  padding: 0;
+  counter-reset: flow;
+}
+
+.bp-flow li {
+  counter-increment: flow;
+  position: relative;
+  padding-left: 2.6em;
+  margin-bottom: 0.9em;
+}
+
+.bp-flow li::before {
+  content: counter(flow, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  font-family: var(--deck-font-mono);
+  font-size: 0.82em;
+  color: var(--deck-accent);
+  border: 1px solid var(--deck-line);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+  background: #101a2c;
+}
+
+/* ---------- glow cards (mouse-tracking radial glow) ---------- */
+/* Pair with bp-cards.js or inline mousemove handler setting
+   --mouse-x / --mouse-y on each .bp-card. */
+
+.bp-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.7rem;
+  margin: 1.4em 0;
+}
+
+.bp-card {
+  position: relative;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bp-card::before,
+.bp-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 500ms;
+  pointer-events: none;
+}
+
+.bp-card::before {
+  background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.05), transparent 40%);
+  z-index: 3;
+}
+
+.bp-card::after {
+  background: radial-gradient(450px circle at var(--mouse-x) var(--mouse-y),
+    rgba(76, 201, 240, 0.45), transparent 40%);
+  z-index: 1;
+}
+
+.bp-cards:hover > .bp-card::after { opacity: 1; }
+.bp-card:hover::before { opacity: 1; }
+
+.bp-card-content {
+  position: relative;
+  z-index: 2;
+  background: #111b2b;
+  border-radius: inherit;
+  margin: 1px;                 /* the 1px gap reveals the border glow */
+  padding: 1.1em 1.25em;
+  min-height: 100%;
+}
+
+.bp-card h3 {
+  font-size: 1.02rem;
+  color: var(--deck-accent);
+  margin-bottom: 0.4em;
+}
+
+.bp-card p {
+  font-size: 0.88rem;
+  color: #aebdd2;
+  margin: 0;
+}
+
+/* status chips: decided / open / risk */
+.bp-chip {
+  display: inline-block;
+  font-family: var(--deck-font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.25em 0.8em;
+  margin-bottom: 0.7em;
+  border: 1px solid;
+}
+
+.bp-chip.decided { color: #6ee7a0; border-color: rgba(110, 231, 160, 0.4); }
+.bp-chip.open    { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); }
+.bp-chip.risk    { color: #f87171; border-color: rgba(248, 113, 113, 0.4); }
+
+/* title slide */
+.bp-title h1 {
+  background: linear-gradient(90deg, #f0f5fc 40%, var(--deck-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bp-title .doc-meta {
+  font-family: var(--deck-font-mono);
+  font-size: 0.8rem;
+  color: var(--deck-muted);
+  margin-top: 3em;
+  display: flex;
+  gap: 2.5em;
+  flex-wrap: wrap;
+}

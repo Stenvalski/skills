@@ -1,0 +1,223 @@
+/*
+ * Theme: Field Guide — warm, instructional, step-by-step.
+ * Use for: end-user documentation, "how to use the app" walkthroughs,
+ * onboarding and training material.
+ *
+ * Warm paper background, friendly indigo accent, big numbered steps,
+ * callout boxes and screenshot frames.
+ */
+
+:root {
+  --deck-bg: #faf7f2;
+  --deck-fg: #2b2a33;
+  --deck-muted: #77716a;
+  --deck-accent: #4f46e5;
+  --deck-accent-soft: #e9e7fc;
+  --deck-warn: #b45309;
+  --deck-ok: #15803d;
+  --deck-font-display: var(--deck-font);
+}
+
+.deck h1, .deck h2 { font-weight: 700; color: #211f2b; }
+
+.deck .lead {
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  color: #4c4a56;
+  max-width: 44rem;
+}
+
+/* ---------- step header: big number + title ---------- */
+
+.fg-step {
+  display: flex;
+  align-items: center;
+  gap: 1.1em;
+  margin-bottom: 1em;
+}
+
+.fg-step .num {
+  flex: none;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 14px;
+  background: var(--deck-accent);
+  color: #fff;
+  font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+}
+
+.fg-step h2 { margin: 0; }
+
+.fg-step .of {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deck-muted);
+  display: block;
+  margin-bottom: 0.2em;
+}
+
+/* ---------- callouts ---------- */
+
+.fg-callout {
+  border-radius: 10px;
+  padding: 0.9em 1.2em 0.9em 3em;
+  margin: 1.1em 0;
+  position: relative;
+  font-size: 0.95rem;
+  background: var(--deck-accent-soft);
+  color: #37327a;
+}
+
+.fg-callout::before {
+  position: absolute;
+  left: 1em;
+  top: 0.85em;
+  font-size: 1.1em;
+}
+
+.fg-callout.tip::before  { content: "\1F4A1"; }  /* 💡 */
+.fg-callout.note::before { content: "\1F4CC"; }  /* 📌 */
+
+.fg-callout.warn {
+  background: #fdf0e3;
+  color: #7c3f10;
+}
+.fg-callout.warn::before { content: "\26A0\FE0F"; } /* ⚠️ */
+
+.fg-callout.ok {
+  background: #e6f4ea;
+  color: #14532d;
+}
+.fg-callout.ok::before { content: "\2705"; } /* ✅ */
+
+/* ---------- screenshot frame ---------- */
+/* Wrap an <img> — or placeholder text — in a mock browser window. */
+
+.fg-screen {
+  background: #fff;
+  border: 1px solid #e4ded4;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(43, 42, 51, 0.1);
+  overflow: hidden;
+  margin: 1.2em 0;
+}
+
+.fg-screen .bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.55em 0.9em;
+  background: #f1ece4;
+  border-bottom: 1px solid #e4ded4;
+}
+
+.fg-screen .bar i {
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  background: #d5cec3;
+}
+
+.fg-screen .bar .addr {
+  flex: 1;
+  margin-left: 0.6em;
+  background: #fff;
+  border-radius: 6px;
+  font-family: var(--deck-font-mono);
+  font-size: 0.68rem;
+  color: var(--deck-muted);
+  padding: 0.25em 0.8em;
+}
+
+.fg-screen img { display: block; width: 100%; }
+
+.fg-screen .placeholder {
+  padding: clamp(2rem, 6vh, 4rem) 1.5rem;
+  text-align: center;
+  color: #b3aca2;
+  font-size: 0.9rem;
+  background:
+    repeating-linear-gradient(-45deg, transparent, transparent 12px,
+      #f6f2ea 12px, #f6f2ea 24px);
+}
+
+/* ---------- UI references in prose ---------- */
+
+/* name a button/menu item the user should click */
+.deck .ui {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #d9d2c7;
+  border-radius: 7px;
+  padding: 0.05em 0.55em;
+  font-size: 0.9em;
+  font-weight: 600;
+  box-shadow: 0 1px 0 #d9d2c7;
+  white-space: nowrap;
+}
+
+/* click path: Settings › Users › Add */
+.fg-path {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  flex-wrap: wrap;
+}
+
+.fg-path .sep { color: var(--deck-muted); }
+
+/* ---------- agenda / "what you'll learn" list ---------- */
+
+.fg-agenda {
+  list-style: none;
+  padding: 0;
+  counter-reset: agenda;
+}
+
+.fg-agenda li {
+  counter-increment: agenda;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9em;
+  padding: 0.55em 0;
+  border-bottom: 1px dashed #e0d9cd;
+  font-size: 1.05rem;
+}
+
+.fg-agenda li::before {
+  content: counter(agenda);
+  flex: none;
+  font-weight: 700;
+  color: var(--deck-accent);
+  font-size: 0.9em;
+}
+
+/* ---------- title slide ---------- */
+
+.fg-title .app-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  background: #fff;
+  border: 1px solid #e4ded4;
+  border-radius: 999px;
+  padding: 0.4em 1.1em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4c4a56;
+  margin-bottom: 2em;
+  box-shadow: 0 2px 8px rgba(43, 42, 51, 0.06);
+}
+
+.fg-title .app-badge i {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+  background: var(--deck-ok);
+}

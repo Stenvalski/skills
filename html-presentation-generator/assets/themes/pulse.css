@@ -1,0 +1,380 @@
+/*
+ * Theme: Pulse — vertical scrollytelling with a central timeline.
+ * Use for: roadmaps, release histories, project journeys, year-in-review.
+ * Pairs with scroll.js (not deck.js — this one scrolls).
+ *
+ * Look: near-black surfaces, one loud lime accent, bold uppercase
+ * display type, rounded media cards. Milestones alternate left/right
+ * of a glowing spine and fly in as they enter the viewport.
+ */
+
+:root {
+  --sd-bg: #0a0c10;
+  --sd-fg: #e9edf3;
+  --sd-muted: #8a93a3;
+  --sd-accent: #c9f24b;
+  --sd-accent-dim: rgba(201, 242, 75, 0.14);
+  --sd-card: #12151c;
+  --sd-line: #242b38;
+  --sd-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --sd-font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body.scrolldeck {
+  margin: 0;
+  background: var(--sd-bg);
+  color: var(--sd-fg);
+  font-family: var(--sd-font);
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.scrolldeck a { color: var(--sd-accent); }
+
+.scrolldeck kbd {
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  border: 1px solid var(--sd-line);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-family: var(--sd-font-mono);
+  font-size: 0.85em;
+  background: #141821;
+}
+
+/* ---------- progress bar (injected by scroll.js) ---------- */
+
+.sd-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sd-progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--sd-accent);
+  box-shadow: 0 0 12px rgba(201, 242, 75, 0.6);
+}
+
+/* ---------- hero ---------- */
+
+.sd-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.5rem 5rem;
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 0%, rgba(201, 242, 75, 0.09), transparent 70%),
+    var(--sd-bg);
+}
+
+.sd-hero .eyebrow {
+  font-family: var(--sd-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sd-accent);
+  margin-bottom: 1.6rem;
+}
+
+.sd-hero h1 {
+  font-size: clamp(2.6rem, 8vw, 5.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  margin: 0 0 1.4rem;
+  background: linear-gradient(180deg, #ffffff 55%, #9aa5b8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sd-hero h1 em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--sd-accent), #7ed957);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sd-hero .tagline {
+  max-width: 36rem;
+  color: var(--sd-muted);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  margin: 0;
+}
+
+.sd-hero .scrollhint {
+  position: absolute;
+  bottom: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sd-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sd-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sd-hero .scrollhint::after {
+  content: "";
+  width: 1px;
+  height: 2.6rem;
+  background: linear-gradient(180deg, var(--sd-accent), transparent);
+  animation: sd-drip 1.8s ease-in-out infinite;
+}
+
+@keyframes sd-drip {
+  0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+  70%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-hero .scrollhint::after { animation: none; }
+}
+
+/* ---------- timeline spine ---------- */
+
+.sd-timeline {
+  position: relative;
+  max-width: 74rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+}
+
+.sd-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg,
+    transparent,
+    var(--sd-line) 6%,
+    var(--sd-line) 94%,
+    transparent);
+}
+
+/* ---------- milestone rows ---------- */
+
+.milestone {
+  display: grid;
+  grid-template-columns: 1fr 5rem 1fr;
+  align-items: center;
+  margin-bottom: clamp(4rem, 10vh, 7rem);
+  position: relative;
+}
+
+.milestone:last-child { margin-bottom: 0; }
+
+/* spine dot */
+.milestone::before {
+  content: "";
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--sd-bg);
+  border: 2px solid var(--sd-muted);
+  transition: border-color 0.4s, box-shadow 0.4s;
+  z-index: 1;
+}
+
+.milestone.is-current::before {
+  border-color: var(--sd-accent);
+  box-shadow: 0 0 0 5px var(--sd-accent-dim), 0 0 18px rgba(201, 242, 75, 0.55);
+}
+
+/* card + meta placement: odd = card left, even = card right */
+.milestone .card { grid-row: 1; }
+.milestone .meta { grid-row: 1; }
+
+.milestone:nth-child(odd) .card { grid-column: 1; }
+.milestone:nth-child(odd) .meta { grid-column: 3; justify-self: start; text-align: left; }
+
+.milestone:nth-child(even) .card { grid-column: 3; }
+.milestone:nth-child(even) .meta { grid-column: 1; justify-self: end; text-align: right; }
+
+/* ---------- fly-in (scroll.js adds .in-view) ---------- */
+
+.milestone .card,
+.milestone .meta {
+  opacity: 0;
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.milestone:nth-child(odd)  .card { transform: translateX(-4.5rem); }
+.milestone:nth-child(even) .card { transform: translateX(4.5rem); }
+.milestone:nth-child(odd)  .meta { transform: translateX(3rem); }
+.milestone:nth-child(even) .meta { transform: translateX(-3rem); }
+
+.milestone.in-view .card,
+.milestone.in-view .meta {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .milestone .card, .milestone .meta {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none;
+  }
+}
+
+/* ---------- card ---------- */
+
+.milestone .card {
+  background: var(--sd-card);
+  border: 1px solid var(--sd-line);
+  border-radius: 16px;
+  padding: 1.6rem 1.7rem;
+}
+
+.milestone.is-current .card { border-color: #39435a; }
+
+.card h2 {
+  font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+}
+
+.card p { margin: 0 0 0.9em; color: #b7c0cf; font-size: 0.95em; }
+.card p:last-child { margin-bottom: 0; }
+
+.card .stat {
+  font-family: var(--sd-font-mono);
+  font-size: 0.82rem;
+  color: var(--sd-accent);
+  background: var(--sd-accent-dim);
+  border-radius: 8px;
+  padding: 0.55em 0.9em;
+  display: inline-block;
+  margin-top: 0.4em;
+}
+
+/* screenshot / media slot inside a card */
+.card .shot {
+  border: 1px solid var(--sd-line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.1em 0 0.4em;
+}
+
+.card .shot img { display: block; width: 100%; }
+
+.card .shot .placeholder {
+  padding: 2.6rem 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #525c6e;
+  background:
+    repeating-linear-gradient(-45deg, transparent, transparent 12px,
+      #161a23 12px, #161a23 24px);
+}
+
+/* ---------- meta (date + status on the other side of the spine) ---------- */
+
+.meta .when {
+  font-family: var(--sd-font-mono);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  font-weight: 600;
+  color: var(--sd-fg);
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.meta .chip {
+  display: inline-block;
+  font-family: var(--sd-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 0.35em 1em;
+  border: 1px solid;
+}
+
+.chip.shipped  { color: var(--sd-accent); border-color: rgba(201, 242, 75, 0.5); background: var(--sd-accent-dim); }
+.chip.live     { color: #6ee7a0; border-color: rgba(110, 231, 160, 0.45); }
+.chip.building { color: #fbbf24; border-color: rgba(251, 191, 36, 0.45); }
+.chip.planned  { color: var(--sd-muted); border-color: var(--sd-line); }
+
+/* ---------- end cap ---------- */
+
+.sd-end {
+  text-align: center;
+  padding: 3rem 1.5rem 7rem;
+}
+
+.sd-end h2 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.6em;
+}
+
+.sd-end p { color: var(--sd-muted); max-width: 34rem; margin: 0 auto 0.8em; }
+
+/* ---------- mobile: spine moves to the left edge ---------- */
+
+@media (max-width: 820px) {
+  .milestone {
+    grid-template-columns: 2.4rem 1fr;
+    align-items: start;
+    margin-bottom: 3.5rem;
+  }
+
+  .sd-timeline::before { left: calc(1.5rem + 1.2rem); transform: none; }
+
+  .milestone::before { grid-column: 1; grid-row: 1; margin-top: 0.4rem; }
+
+  .milestone:nth-child(odd) .card,
+  .milestone:nth-child(even) .card { grid-column: 2; grid-row: 2; }
+
+  .milestone:nth-child(odd) .meta,
+  .milestone:nth-child(even) .meta {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+    text-align: left;
+    margin-bottom: 0.7rem;
+  }
+
+  .milestone:nth-child(odd) .card,
+  .milestone:nth-child(even) .card { transform: translateX(3rem); }
+  .milestone:nth-child(odd) .meta,
+  .milestone:nth-child(even) .meta { transform: translateX(3rem); }
+
+  .meta .when { display: inline-block; margin: 0 0.8em 0 0; }
+}

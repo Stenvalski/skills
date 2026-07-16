@@ -1,0 +1,273 @@
+/*
+ * deck.css — core structure for deck.js presentations.
+ * Theme-agnostic: visual identity comes from a theme file that
+ * overrides the custom properties below (and adds its own components).
+ */
+
+:root {
+  --deck-bg: #ffffff;
+  --deck-fg: #1a2332;
+  --deck-muted: #64748b;
+  --deck-accent: #0f766e;
+  --deck-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --deck-font-display: var(--deck-font);
+  --deck-font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --deck-pad: clamp(1.5rem, 6vw, 5rem);
+  --deck-maxw: 62rem;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--deck-bg);
+  color: var(--deck-fg);
+  font-family: var(--deck-font);
+  font-size: clamp(16px, 1.6vw, 22px);
+  line-height: 1.55;
+  overflow: hidden;
+}
+
+/* ---------- slides ---------- */
+
+.deck {
+  position: fixed;
+  inset: 0;
+}
+
+.deck > section {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--deck-pad);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+}
+
+.deck > section > * {
+  width: 100%;
+  max-width: var(--deck-maxw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.deck > section.is-past   { transform: translateX(-3rem); }
+.deck > section.is-future { transform: translateX(3rem); }
+
+.deck > section.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s;
+}
+
+/* ---------- fragments (step-by-step reveals) ---------- */
+/* default = fade-up; add a variant class for a different entrance:
+   .fragment.fade      fade only, no movement
+   .fragment.pop       scale up from 60%
+   .fragment.fly-left  fly in from the left
+   .fragment.fly-right fly in from the right                      */
+
+.fragment {
+  opacity: 0;
+  transform: translateY(0.6rem);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.fragment.fade      { transform: none; }
+.fragment.pop       { transform: scale(0.6); }
+.fragment.fly-left  { transform: translateX(-3rem); }
+.fragment.fly-right { transform: translateX(3rem); }
+
+.fragment.visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fragment { transform: none; transition: opacity 0.35s ease; }
+}
+
+/* ---------- typography defaults ---------- */
+
+.deck h1 {
+  font-family: var(--deck-font-display);
+  font-size: clamp(2rem, 5.5vw, 3.6rem);
+  line-height: 1.12;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.02em;
+}
+
+.deck h2 {
+  font-family: var(--deck-font-display);
+  font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+  line-height: 1.18;
+  margin: 0 0 0.7em;
+  letter-spacing: -0.015em;
+}
+
+.deck h3 {
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  margin: 0 0 0.5em;
+}
+
+.deck p, .deck ul, .deck ol { margin: 0 0 0.9em; }
+.deck li { margin-bottom: 0.45em; }
+
+.deck a { color: var(--deck-accent); }
+
+.deck code, .deck kbd, .deck pre { font-family: var(--deck-font-mono); }
+
+.deck .muted { color: var(--deck-muted); }
+
+/* "kicker" — small label above a heading */
+.deck .kicker {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--deck-accent);
+  margin-bottom: 1.1em;
+}
+
+/* two-column layout helper */
+.deck .cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .deck .cols { grid-template-columns: 1fr; }
+}
+
+/* ---------- chrome: progress, counter, buttons ---------- */
+
+.deck-progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: transparent;
+  z-index: 20;
+}
+
+.deck-progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--deck-accent);
+  transition: width 0.45s ease;
+}
+
+.deck-hud {
+  position: fixed;
+  right: 1rem;
+  bottom: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 20;
+  font-size: 0.8rem;
+  color: var(--deck-muted);
+  user-select: none;
+}
+
+.deck-counter {
+  min-width: 3.4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-btn {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--deck-muted) 35%, transparent);
+  background: transparent;
+  color: var(--deck-muted);
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.deck-btn:hover {
+  color: var(--deck-accent);
+  border-color: var(--deck-accent);
+}
+
+/* ---------- help overlay ---------- */
+
+.deck-help {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 14, 22, 0.55);
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+}
+
+.deck-help[hidden] { display: none; }
+
+.deck-help-panel {
+  background: var(--deck-bg);
+  color: var(--deck-fg);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  max-width: 26rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  cursor: default;
+  font-size: 0.95rem;
+}
+
+.deck-help-panel h2 { font-size: 1.2rem; margin: 0 0 1em; }
+.deck-help-panel table { border-collapse: collapse; width: 100%; }
+.deck-help-panel td { padding: 0.3em 0.6em 0.3em 0; vertical-align: top; }
+.deck-help-panel p { margin: 1.2em 0 0; color: var(--deck-muted); font-size: 0.85rem; }
+
+.deck-help-panel kbd,
+.deck kbd {
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  border: 1px solid color-mix(in srgb, var(--deck-muted) 45%, transparent);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--deck-muted) 8%, transparent);
+}
+
+/* ---------- print: every slide on its own page ---------- */
+
+@media print {
+  body { overflow: visible; }
+  .deck { position: static; }
+  .deck > section {
+    position: static;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    page-break-after: always;
+    min-height: 90vh;
+  }
+  .fragment { opacity: 1 !important; transform: none !important; }
+  .deck-progress, .deck-hud, .deck-help { display: none !important; }
+}

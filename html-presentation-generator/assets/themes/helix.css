@@ -1,0 +1,182 @@
+/*
+ * Theme: Helix — clean, clinical, boardroom-ready.
+ * Use for: concept pitches, project proposals, stakeholder updates.
+ *
+ * Light background, deep ink text, restrained teal accent,
+ * serif display headings for an editorial, "printed report" feel.
+ */
+
+:root {
+  --deck-bg: #fbfaf7;
+  --deck-fg: #16202e;
+  --deck-muted: #6b7684;
+  --deck-accent: #0e7569;
+  --deck-accent-soft: #e2f0ee;
+  --deck-font-display: "Charter", "Iowan Old Style", "Palatino", Georgia, serif;
+}
+
+/* faint top rule + document-style header line on every slide */
+.deck > section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--deck-accent), #6bbfb5);
+}
+
+.deck h1, .deck h2 {
+  font-weight: 500;
+  color: #101a27;
+}
+
+.deck .kicker { color: var(--deck-accent); }
+
+/* lead paragraph — the one-sentence takeaway of a slide */
+.deck .lead {
+  font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+  line-height: 1.45;
+  color: #2a3648;
+  max-width: 46rem;
+}
+
+/* accent rule under a heading */
+.deck .rule {
+  width: 3.5rem;
+  height: 3px;
+  background: var(--deck-accent);
+  border: none;
+  margin: 0 0 1.6em;
+}
+
+/* highlighted phrase */
+.deck mark {
+  background: var(--deck-accent-soft);
+  color: inherit;
+  padding: 0.05em 0.25em;
+  border-radius: 3px;
+}
+
+/* ---------- components ---------- */
+
+/* fact strip: a row of short labelled facts */
+.helix-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1.2rem;
+  margin: 1.5em 0;
+}
+
+.helix-facts > div {
+  border-top: 2px solid var(--deck-accent);
+  padding-top: 0.7em;
+}
+
+.helix-facts .fact-value {
+  font-family: var(--deck-font-display);
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  line-height: 1.1;
+  color: #101a27;
+}
+
+.helix-facts .fact-label {
+  font-size: 0.82rem;
+  color: var(--deck-muted);
+  margin-top: 0.35em;
+}
+
+/* quiet panel for quotes / problem statements */
+.helix-panel {
+  background: #ffffff;
+  border: 1px solid #e6e3db;
+  border-left: 4px solid var(--deck-accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1.2em 1.5em;
+  margin: 1.2em 0;
+  box-shadow: 0 1px 3px rgba(22, 32, 46, 0.05);
+}
+
+.helix-panel cite {
+  display: block;
+  font-style: normal;
+  font-size: 0.85rem;
+  color: var(--deck-muted);
+  margin-top: 0.8em;
+}
+
+/* checklist — for benefits / feature lists */
+.helix-check {
+  list-style: none;
+  padding: 0;
+}
+
+.helix-check li {
+  position: relative;
+  padding-left: 2em;
+  margin-bottom: 0.8em;
+}
+
+.helix-check li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  width: 1.35em;
+  height: 1.35em;
+  border-radius: 50%;
+  background: var(--deck-accent-soft);
+  color: var(--deck-accent);
+  font-weight: 700;
+  font-size: 0.85em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* horizontal timeline / phases */
+.helix-timeline {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.8rem;
+  margin: 1.8em 0;
+}
+
+.helix-timeline > div {
+  border-top: 3px solid #d8d4ca;
+  padding-top: 0.8em;
+  font-size: 0.92rem;
+}
+
+.helix-timeline > div.active { border-top-color: var(--deck-accent); }
+
+.helix-timeline .phase {
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--deck-muted);
+  display: block;
+  margin-bottom: 0.4em;
+}
+
+.helix-timeline > div.active .phase { color: var(--deck-accent); }
+
+@media (max-width: 700px) {
+  .helix-timeline { grid-auto-flow: row; grid-auto-columns: unset; }
+}
+
+/* title slide */
+.deck section.helix-title { text-align: left; }
+
+.helix-title .doc-meta {
+  margin-top: 3em;
+  font-size: 0.88rem;
+  color: var(--deck-muted);
+  border-top: 1px solid #e6e3db;
+  padding-top: 1.2em;
+  display: flex;
+  gap: 2.5em;
+  flex-wrap: wrap;
+}
